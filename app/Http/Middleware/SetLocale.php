@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use App\Models\Visit;
 
 class SetLocale
 {
@@ -20,7 +21,17 @@ class SetLocale
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next): Response
-    {
+    {   
+        $ip =  $request->ip();
+        $agent =  $request->header('User-Agent');
+
+        if(!Visit::where('ip_address', $ip)->where('user_agent', $agent)->exists()){
+            Visit::create([
+                'ip_address' => $ip,
+                'user_agent' => $agent
+            ]);
+        }
+
         // Verifica se já existe um idioma salvo na sessão
         if (Session::has('locale')) {
             // Define o idioma da sessão

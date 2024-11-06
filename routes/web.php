@@ -5,7 +5,8 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SkillController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\SetLocale;
-use Inertia\Inertia;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\VisitController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -23,9 +24,8 @@ Route::group(['middleware' => SetLocale::class], function () {
         config('jetstream.auth_session'),
         'verified',
     ])->group(function () {
-        Route::get('/dashboard', function () {
-            return Inertia::render('Dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/visits', VisitController::class)->name('visits');
 
         Route::resource('projects', ProjectController::class);
         Route::resource('skills', SkillController::class);
